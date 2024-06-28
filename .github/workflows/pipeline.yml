@@ -1,0 +1,33 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  deployment_pipeline:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies (frontend)
+        run: npm install
+        working-directory: frontend
+      - name: Build (frontend)
+        run: npm run build
+        working-directory: frontend
+      - name: Install depedencies (backend)
+        run: npm install
+      - name: Check style (backend)
+        run: npm run lint
+      - name: Deploy
+        if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '#skip') }}
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}

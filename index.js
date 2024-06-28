@@ -15,7 +15,7 @@ morgan.token('clength', (req) => req.get('content-length'))
 app.use(morgan(':method :url :status :clength :total-time[3]ms :json'))
 
 app.get('/health', (_, res) => {
-  res.send('ok')
+    res.send('ok')
 })
 
 app.get('/info', (req, res, next) => {

@@ -1,0 +1,17 @@
+name: Periodic health check
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+
+jobs:
+  healthcheck:
+      runs-on: ubuntu-20.04
+      steps:
+        - name: Do the check
+          uses: jtalk/url-health-check-action@v4
+          with:
+            url: https://phonebook-ineb.onrender.com
+            follow-redirect: false
+            max-attemps: 2
+            retry-delay: 180s
